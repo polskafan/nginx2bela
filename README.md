@@ -13,7 +13,7 @@ Checkout and prepare environment
 -----
     git clone https://github.com/polskafan/nginx2bela.git
     cd nginx2bela
-    sudo bash install.sh
+    
 
 Configuration
 -----
@@ -21,9 +21,6 @@ Configuration
     cp belacoder.env.sample belacoder.env
     cp srtla.env.sample srtla.env
 
-Run
+Install
 -----
-belacoder needs to be run as root:
-
-    sudo su -
-    venv/bin/python main.py
+    sudo bash install.sh
