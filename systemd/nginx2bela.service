@@ -1,0 +1,14 @@
+[Unit]
+Description=NGINX2Bela Service
+After=network.target
+
+[Service]
+WorkingDirectory=###BASE_DIRECTORY###
+ExecStart=###BASE_DIRECTORY###/venv/bin/python ###BASE_DIRECTORY###/main.py
+KillMode=process
+Restart=on-failure
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

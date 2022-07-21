@@ -13,11 +13,7 @@ Checkout and prepare environment
 -----
     git clone https://github.com/polskafan/nginx2bela.git
     cd nginx2bela
-    python3.7 -m venv venv
-    venv/bin/pip install -r dependencies.txt
-    venv/bin/pip install -r requirements.txt
-    ln -s /usr/bin/belacoder belacoder_push
-    ln -s /usr/bin/srtla_send srtla_send_push
+    sudo bash install.sh
 
 Configuration
 -----
@@ -31,8 +27,3 @@ belacoder needs to be run as root:
 
     sudo su -
     venv/bin/python main.py
-
-Todo
------
-* autorun on boot
-* continuously update IPs file

@@ -54,15 +54,14 @@ class WebhookHandler:
             return
 
     async def srtla_task(self, port):
-        ips_file = await self.generate_ips_file()
-
         process = None
         try:
             while True:
                 # use symlinked binaries, so we do not interfere with belaUI and vice versa
                 # Syntax: srtla_send SRT_LISTEN_PORT SRTLA_HOST SRTLA_PORT BIND_IPS_FILE
                 if port is not None:
-                    args = [f"{port}", f"{self.config['srtla']['HOST']}", f"{self.config['srtla']['PORT']}", ips_file]
+                    args = [f"{port}", f"{self.config['srtla']['HOST']}", f"{self.config['srtla']['PORT']}",
+                            f"{self.config['srtla']['IPS_FILE']}"]
                     process = await asyncio.create_subprocess_exec("./srtla_send_push", *args)
                     await process.wait()
                     await asyncio.sleep(1)
@@ -72,15 +71,16 @@ class WebhookHandler:
                 self.ports.remove(port)
 
     async def generate_ips_file(self):
-        with open("/tmp/push_srtla.ips", "w+") as ip_file:
-            for name, interface in ifcfg.interfaces().items():
-                if name == "lo":
-                    continue
+        while True:
+            with open(f"{self.config['srtla']['IPS_FILE']}", "w+") as ip_file:
+                for name, interface in ifcfg.interfaces().items():
+                    if name == "lo":
+                        continue
 
-                for ip in interface['inet4']:
-                    ip_file.write(f"{ip}\n")
+                    for ip in interface['inet4']:
+                        ip_file.write(f"{ip}\n")
 
-        return "/tmp/push_srtla.ips"
+            await asyncio.sleep(10)
 
     async def start_belacoder(self, app, name):
         if (app, name) in self.belacoder_tasks:
@@ -187,7 +187,7 @@ class WebhookHandler:
 
 async def main():
     webhook_handler = WebhookHandler(cfg)
-    await asyncio.gather(webhook_handler.listen_web())
+    await asyncio.gather(webhook_handler.listen_web(), webhook_handler.generate_ips_file())
 
 
 def run():
